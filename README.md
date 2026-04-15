@@ -66,3 +66,166 @@ Empresas que entregam uma experiência melhor acabam conseguindo manter mais cli
 O NPS não é só um número de satisfação. Ele ajuda a entender o que está funcionando (ou não) na experiência do cliente.
 
 Se a empresa conseguir usar isso de forma mais antecipada, ela deixa de só reagir aos problemas e passa a evitá-los, o que impacta diretamente na retenção e no crescimento do negócio.
+
+---
+
+## Requisito 2: **Definição da Target**
+
+### 1. Qual variável representa a satisfação do cliente?
+
+A variável que representa a satisfação do cliente é o nps_score.
+
+Ela vai de 0 a 10 e mostra o quanto o cliente ficou satisfeito com a experiência como um todo. É a forma mais direta de medir a percepção final do cliente sobre a empresa.
+
+---
+
+### 2. Por que ela foi escolhida?
+
+O nps_score foi escolhido porque é uma métrica consolidada no mercado e representa bem o resultado final da experiência do cliente.
+
+Além disso, ele permite segmentar os clientes de forma clara:
+- 0 a 6 → detratores  
+- 7 e 8 → neutros  
+- 9 e 10 → promotores  
+
+Isso facilita entender rapidamente quem teve uma boa experiência e quem teve problemas.
+
+Por outro lado, é importante destacar que o NPS não explica sozinho o que causou essa satisfação ou insatisfação. Ele mostra o resultado final, mas não os motivos, o que reforça a necessidade de analisá-lo junto com dados operacionais.
+
+---
+
+### 3. Em que momento da jornada essa informação é coletada?
+
+O NPS é coletado após o encerramento da jornada do cliente.
+
+Ou seja, depois que:
+- o pedido foi entregue  
+- possíveis problemas foram resolvidos  
+- o cliente já teve a experiência completa  
+
+Isso faz com que ele seja uma métrica reativa, já que só é conhecida depois que tudo aconteceu.
+
+---
+
+### 4. Existe algum risco de usar essa variável de forma inadequada?
+
+Sim, existem alguns pontos de atenção importantes.
+
+#### Uso de dados que acontecem depois da experiência
+
+Se forem utilizadas variáveis que só existem após o problema acontecer, o modelo pode acabar usando informações que não estariam disponíveis no momento da previsão.
+
+Por exemplo:
+- número de reclamações  
+- tempo de resolução  
+
+Esses dados ajudam a explicar o NPS, mas não necessariamente a prever antes da experiência terminar.
+
+---
+
+#### Viés de quem responde
+
+Nem todos os clientes respondem o NPS.
+
+Normalmente, quem responde são clientes com experiências muito boas ou muito ruins, o que pode gerar uma visão distorcida da base total de clientes.
+
+---
+
+#### NPS mostra o resultado, não a causa
+
+O NPS indica o nível de satisfação, mas não explica diretamente o motivo.
+
+Por isso, ele precisa ser analisado em conjunto com variáveis como entrega, atendimento e características do pedido para gerar insights acionáveis.
+
+---
+
+#### Limitação para ação preventiva
+
+Como o NPS é coletado apenas no final da jornada, ele não permite que a empresa atue de forma antecipada.
+
+Esse é justamente o principal problema de negócio: a empresa acaba reagindo depois, ao invés de evitar que a experiência seja ruim.
+
+---
+
+### Conclusão
+
+O nps_score é uma boa variável para representar a satisfação do cliente, pois resume a percepção final da experiência em uma única métrica.
+
+No entanto, por ser coletado apenas após a jornada, ele deve ser utilizado junto com dados operacionais para permitir análises mais completas e possibilitar ações preventivas.
+
+---
+
+## Requisito 3: **Análise Exploratória dos Dados (EDA)**
+
+### 1. Quais fatores parecem mais críticos para a satisfação?
+
+Para identificar os fatores mais críticos, foram utilizadas três abordagens complementares no notebook analises.ipynb: análise de correlação com o nps_score, comparação entre grupos de clientes (detratores, neutros e promotores) e avaliação de importância de variáveis por meio de um modelo preditivo.
+
+Os resultados foram consistentes entre essas análises.
+
+As variáveis que mais se destacaram foram:
+- delivery_delay_days
+- complaints_count
+- customer_service_contacts
+- resolution_time_days
+
+Essas métricas apresentaram associação relevante com o NPS e diferenças claras entre os grupos analisados, conforme evidenciado nos gráficos e tabelas gerados no notebook.
+
+Isso indica que problemas logísticos e dificuldades no atendimento estão entre os principais fatores relacionados à insatisfação do cliente.
+
+---
+
+### 2. O que mais gera detratores?
+
+A partir das análises realizadas no analises.ipynb, os detratores apresentam padrões bem consistentes quando comparados aos promotores:
+
+- Maior atraso na entrega  
+- Maior número de reclamações  
+- Mais contatos com o atendimento  
+- Maior tempo de resolução de problemas  
+
+Esses fatores aparecem tanto na análise descritiva quanto na avaliação do modelo, o que reforça a relação entre falhas operacionais e baixa satisfação.
+
+Ou seja, o detrator normalmente não surge de forma aleatória, mas sim como consequência de uma jornada com atritos.
+
+---
+
+### 3. Existe algum “ponto de ruptura” na experiência do cliente?
+
+A análise exploratória também indicou possíveis pontos de ruptura na experiência.
+
+No caso do atraso na entrega, por exemplo, observou-se que o NPS tende a cair conforme aumentam os dias de atraso, o que sugere uma tolerância limitada por parte do cliente.
+
+O mesmo comportamento foi observado em relação ao número de contatos com o atendimento. A partir de múltiplas interações, a experiência deixa de ser pontual e passa a ser percebida como problemática.
+
+Esses padrões foram identificados a partir das análises por faixa realizadas no notebook, indicando limites operacionais relevantes.
+
+---
+
+### 4. Que tipo de cliente tende a ter NPS mais alto ou mais baixo?
+
+Clientes com NPS mais alto (promotores) geralmente apresentam uma jornada mais simples:
+
+- Recebem o pedido dentro do prazo  
+- Não precisam acionar o atendimento  
+- Não registram reclamações  
+- Têm resolução rápida quando há algum problema  
+
+Já os clientes com NPS mais baixo (detratores):
+
+- Sofrem com atrasos na entrega  
+- Precisam entrar em contato com o atendimento várias vezes  
+- Têm problemas que demoram para ser resolvidos  
+- Apresentam maior número de reclamações  
+
+Também foram observadas variáveis com alta associação ao NPS, como repeat_purchase_30d e csat_internal_score. No entanto, essas métricas foram analisadas com cautela no notebook, pois podem representar consequência da satisfação ou estar muito próximas do próprio conceito de NPS.
+
+---
+
+### Conclusão
+
+A análise exploratória realizada no notebook analises.ipynb mostra que a satisfação do cliente está diretamente ligada à qualidade da operação, principalmente nos processos de logística e atendimento.
+
+As evidências foram consistentes entre diferentes abordagens analíticas, indicando que atraso na entrega, volume de reclamações, necessidade de suporte e tempo de resolução são fatores relevantes para explicar a variação do NPS.
+
+Isso reforça que a empresa pode melhorar a satisfação não apenas medindo o resultado final, mas atuando diretamente nos processos que influenciam a experiência ao longo da jornada.
