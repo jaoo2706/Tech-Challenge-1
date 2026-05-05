@@ -1,231 +1,263 @@
-# Tech Challenge - Fase 1
-### Case: NPS Preditivo  
+# Tech Challenge — Fase 1: NPS Preditivo
+
+> **FIAP | Pós-Tech — Ciência de Dados**
 
 ---
 
-## Requisito 1: **Entendimento do negócio**
+## Estrutura do Repositório
 
-### 1. Qual problema de negócio está sendo resolvido?
-
-O principal problema aqui é que a empresa só consegue entender se o cliente ficou satisfeito depois que toda a jornada já acabou, através do NPS. Isso acaba limitando bastante a atuação, porque qualquer problema que aconteceu já impactou o cliente.
-
-Ou seja, hoje a empresa age mais no “apagar incêndio” do que em evitar que ele aconteça. Se teve atraso, problema no atendimento ou frustração com o produto, isso só vai aparecer depois, quando já não tem muito o que fazer.
-
-Então o desafio é justamente tentar prever isso antes. A ideia é usar os dados da operação (entrega, atendimento, pedido, etc.) pra entender o que está levando um cliente a virar detrator ou promotor, e com isso agir antes da experiência ficar ruim.
-
----
-
-### 2. Por que o NPS é importante para um e-commerce?
-
-O NPS é importante porque mostra, de forma bem direta, como o cliente enxerga a empresa e se ele recomendaria ou não.
-
-No e-commerce isso pesa ainda mais, porque o cliente tem várias opções e pode trocar de loja muito fácil. Às vezes, um atraso ou um frete caro já é suficiente pra ele não voltar mais.
-
-Além disso, o NPS ajuda a juntar vários pontos da experiência em um único número, o que facilita acompanhar se a empresa está melhorando ou piorando ao longo do tempo. Também ajuda a entender onde estão os principais problemas.
+```
+Tech-Challenge-1/
+├── README.md                        ← Este arquivo (requisitos 1, 2 e reflexão sobre modelo)
+├── data/
+│   └── desafio_nps_fase_1.csv       ← Base de dados original
+├── notebooks/
+│   └── analises.ipynb               ← EDA + modelo preditivo (requisitos 3 e 4)
+└── reports/
+    └── storytelling.pptx            ← Apresentação gerencial
+```
 
 ---
 
-### 3. Quais áreas poderiam se beneficiar desses insights?
+## Objetivo do Projeto
 
-#### Logística
-A logística é uma das áreas que mais impactam o cliente. Atrasos, prazo mal definido ou frete caro influenciam direto na experiência. Com esses insights, dá pra ajustar melhor as promessas de entrega e melhorar a operação.
-
-#### Atendimento ao cliente
-Se a empresa conseguir identificar clientes que estão com risco de ficar insatisfeitos, o atendimento pode agir antes da reclamação acontecer. Isso ajuda a evitar problemas maiores e melhora a experiência.
-
-#### Produto / Experiência digital
-Problemas no site, dificuldade no checkout ou diferença entre o que o cliente espera e o que recebe também influenciam bastante. Esses dados ajudam a melhorar tanto o site quanto a apresentação dos produtos.
-
-#### Pricing / Comercial
-O preço e principalmente o frete têm um peso grande na decisão do cliente. Entender esse impacto ajuda a ajustar melhor as estratégias comerciais.
-
-#### Estratégia / Negócio
-No geral, esses insights ajudam a empresa a focar no que realmente importa pra experiência do cliente, ao invés de tomar decisão no “achismo”.
+Uma empresa de e-commerce percebeu alta variabilidade no NPS entre seus clientes. Mesmo com indicadores operacionais aparentemente semelhantes, alguns clientes tornam-se promotores e outros, detratores. O objetivo deste projeto é **identificar quais fatores operacionais mais influenciam a satisfação do cliente** e propor como a empresa pode agir de forma proativa — antes mesmo da aplicação da pesquisa de NPS.
 
 ---
 
-### 4. Como o NPS impacta o negócio?
+## Descrição da Base de Dados
 
-#### Recompra
-Clientes satisfeitos tendem a comprar de novo. Já clientes insatisfeitos dificilmente voltam. Então o NPS acaba tendo uma relação direta com retenção.
+A base contém **2.500 registros** de pedidos, com dados de logística, atendimento e perfil do cliente. Sem valores nulos.
 
----
-
-#### Boca a boca
-O cliente que teve uma boa experiência costuma indicar a marca, enquanto quem teve uma experiência ruim geralmente compartilha isso com outras pessoas. No e-commerce, isso aparece muito em avaliações e redes sociais.
-
----
-
-#### Market share em e-commerce
-Empresas que entregam uma experiência melhor acabam conseguindo manter mais clientes e atrair novos, principalmente por indicação. Com o tempo, isso ajuda a ganhar espaço no mercado.
-
----
-
-### Conclusão
-
-O NPS não é só um número de satisfação. Ele ajuda a entender o que está funcionando (ou não) na experiência do cliente.
-
-Se a empresa conseguir usar isso de forma mais antecipada, ela deixa de só reagir aos problemas e passa a evitá-los, o que impacta diretamente na retenção e no crescimento do negócio.
-
----
-
-## Requisito 2: **Definição da Target**
-
-### 1. Qual variável representa a satisfação do cliente?
-
-A variável que representa a satisfação do cliente é o nps_score.
-
-Ela vai de 0 a 10 e mostra o quanto o cliente ficou satisfeito com a experiência como um todo. É a forma mais direta de medir a percepção final do cliente sobre a empresa.
+| Variável | Descrição |
+|---|---|
+| `customer_id` | Identificador único do cliente |
+| `order_id` | Identificador único do pedido |
+| `customer_age` | Idade do cliente |
+| `customer_region` | Região geográfica |
+| `customer_tenure_months` | Tempo de relacionamento com a empresa (meses) |
+| `order_value` | Valor total do pedido |
+| `items_quantity` | Quantidade de itens |
+| `discount_value` | Valor de desconto aplicado |
+| `payment_installments` | Número de parcelas |
+| `delivery_time_days` | Tempo total de entrega (dias) |
+| `delivery_delay_days` | Dias de atraso na entrega |
+| `freight_value` | Valor do frete |
+| `delivery_attempts` | Tentativas de entrega |
+| `customer_service_contacts` | Contatos com o atendimento |
+| `resolution_time_days` | Tempo para resolução de problemas (dias) |
+| `complaints_count` | Número de reclamações registradas |
+| `repeat_purchase_30d` | Recompra em até 30 dias (0/1) |
+| `csat_internal_score` | Score interno de satisfação |
+| `nps_score` | **Nota NPS (0 a 10) — variável alvo** |
 
 ---
 
-### 2. Por que ela foi escolhida?
+## Requisito 1 — Entendimento do Negócio
 
-O nps_score foi escolhido porque é uma métrica consolidada no mercado e representa bem o resultado final da experiência do cliente.
+### Qual problema de negócio está sendo resolvido?
 
-Além disso, ele permite segmentar os clientes de forma clara:
-- 0 a 6 → detratores  
-- 7 e 8 → neutros  
-- 9 e 10 → promotores  
+A empresa coleta o NPS **apenas após o encerramento da jornada de compra** — depois que o pedido foi entregue e qualquer problema já afetou o cliente. Isso limita completamente a capacidade de agir de forma preventiva. O problema central é que **a empresa não consegue antecipar a insatisfação**: age no "apagar incêndio" em vez de evitar que ele aconteça.
 
-Isso facilita entender rapidamente quem teve uma boa experiência e quem teve problemas.
+A solução passa por entender quais variáveis operacionais estão mais associadas à satisfação, para que áreas como logística e atendimento possam ser alertadas **durante** a jornada — antes do cliente virar detrator.
 
-Por outro lado, é importante destacar que o NPS não explica sozinho o que causou essa satisfação ou insatisfação. Ele mostra o resultado final, mas não os motivos, o que reforça a necessidade de analisá-lo junto com dados operacionais.
+### Por que o NPS é importante para um e-commerce?
 
----
+O e-commerce é um mercado com baixíssima barreira de troca. O cliente tem dezenas de alternativas a um clique. O NPS importa porque:
 
-### 3. Em que momento da jornada essa informação é coletada?
+- **Resume a percepção total da experiência** em uma única métrica comparável ao longo do tempo e com concorrentes.
+- **Prediz comportamento futuro**: promotores compram mais, gastam mais e indicam a marca; detratores abandonam e reclamam publicamente.
+- **Facilita priorização**: ao cruzar NPS com dados operacionais, a empresa descobre *onde* melhorar, não apenas *que* está mal.
 
-O NPS é coletado após o encerramento da jornada do cliente.
+No e-commerce nacional, onde o NPS médio do setor gira entre 30 e 50 pontos, uma empresa com NPS negativo está perdendo market share ativamente.
 
-Ou seja, depois que:
-- o pedido foi entregue  
-- possíveis problemas foram resolvidos  
-- o cliente já teve a experiência completa  
+### Quais áreas se beneficiam desses insights?
 
-Isso faz com que ele seja uma métrica reativa, já que só é conhecida depois que tudo aconteceu.
+| Área | Como se beneficia |
+|---|---|
+| **Logística** | Identificar limiares de atraso que destroem o NPS; ajustar SLAs com transportadoras |
+| **Atendimento ao Cliente** | Reduzir recontatos; priorizar casos com risco de insatisfação |
+| **Produto / Tecnologia** | Melhorar rastreamento, notificações e pós-venda |
+| **Pricing / Comercial** | Entender se frete elevado afeta a percepção de valor |
+| **Estratégia** | Basear decisões em dados reais de experiência, não em suposições |
 
----
+### Como o NPS impacta o negócio?
 
-### 4. Existe algum risco de usar essa variável de forma inadequada?
+**Recompra:** Promotores recompram mais. Na nossa base, 100% dos promotores realizaram recompra em 30 dias, contra 0% dos detratores — confirmando que NPS e receita recorrente estão diretamente ligados.
 
-Sim, existem alguns pontos de atenção importantes.
+**Boca a boca:** Detratores não ficam em silêncio. Eles reclamam no Reclame Aqui, Google, redes sociais e para conhecidos. Um único detrator pode afastar múltiplos clientes potenciais. Promotores fazem o oposto: indicam organicamente, reduzindo o custo de aquisição (CAC).
 
-#### Uso de dados que acontecem depois da experiência
+**Market share:** Em e-commerce, a experiência *é* o produto. Empresas que entregam NPS consistentemente alto constroem uma vantagem difícil de copiar — fidelidade, menor churn e crescimento orgânico. A médio prazo, ganham market share de concorrentes que negligenciam a experiência.
 
-Se forem utilizadas variáveis que só existem após o problema acontecer, o modelo pode acabar usando informações que não estariam disponíveis no momento da previsão.
+### Indicadores de mercado que complementariam a análise
 
-Por exemplo:
-- número de reclamações  
-- tempo de resolução  
-
-Esses dados ajudam a explicar o NPS, mas não necessariamente a prever antes da experiência terminar.
-
----
-
-#### Viés de quem responde
-
-Nem todos os clientes respondem o NPS.
-
-Normalmente, quem responde são clientes com experiências muito boas ou muito ruins, o que pode gerar uma visão distorcida da base total de clientes.
+- **Benchmark de NPS do setor**: e-commerces de grande porte no Brasil têm NPS entre 30-60 pontos — posicionar a empresa nesse espectro daria urgência real à melhoria.
+- **SLA logístico de mercado**: prazo médio dos grandes marketplaces (ex.: promessa de 1-3 dias úteis) como referência de expectativa do consumidor.
+- **Taxa de reclamações no Reclame Aqui**: benchmark setorial de tempo de resposta e índice de resolução.
+- **Churn rate**: correlacionado com NPS; ajudaria a quantificar financeiramente o impacto de cada ponto de NPS perdido.
+- **Net Revenue Retention (NRR)**: mede se clientes estão expandindo ou reduzindo gastos — fortemente ligado à satisfação.
 
 ---
 
-#### NPS mostra o resultado, não a causa
+## Requisito 2 — Definição da Target
 
-O NPS indica o nível de satisfação, mas não explica diretamente o motivo.
+### Qual variável representa a satisfação do cliente?
 
-Por isso, ele precisa ser analisado em conjunto com variáveis como entrega, atendimento e características do pedido para gerar insights acionáveis.
+A variável `nps_score`, que varia de **0 a 10**, coletada por pesquisa após a experiência de compra. A partir dela, os clientes são segmentados em:
 
----
+| Faixa | Categoria |
+|---|---|
+| 0 a 6 | Detratores |
+| 7 e 8 | Neutros |
+| 9 e 10 | Promotores |
 
-#### Limitação para ação preventiva
+Na base analisada: **74% detratores, 18% neutros, 8% promotores** — proporção que sinaliza problema operacional sistêmico.
 
-Como o NPS é coletado apenas no final da jornada, ele não permite que a empresa atue de forma antecipada.
+### Por que ela foi escolhida?
 
-Esse é justamente o principal problema de negócio: a empresa acaba reagindo depois, ao invés de evitar que a experiência seja ruim.
+O NPS é a métrica de satisfação mais padronizada e comparável do mercado. Diferente de avaliações de estrelas (que variam por plataforma), o NPS tem metodologia única e amplamente adotada, permitindo comparar a empresa com concorrentes e acompanhar evolução temporal. Ela captura a *intenção de recomendação* — proxy forte de comportamento futuro real.
 
----
+### Em que momento da jornada essa informação é coletada?
 
-### Conclusão
+O NPS é coletado **após o encerramento completo da jornada**: pedido entregue e eventuais problemas resolvidos. Isso o torna uma métrica **reativa** — o cliente já viveu toda a experiência antes de responder. É exatamente por isso que a empresa precisa de um modelo preditivo: para antecipar o resultado *durante* a jornada, não depois.
 
-O nps_score é uma boa variável para representar a satisfação do cliente, pois resume a percepção final da experiência em uma única métrica.
+### Existe algum risco de usar essa variável de forma inadequada?
 
-No entanto, por ser coletado apenas após a jornada, ele deve ser utilizado junto com dados operacionais para permitir análises mais completas e possibilitar ações preventivas.
+Sim. Os principais riscos são:
 
----
+1. **Viés de resposta**: clientes com experiências extremas (muito boa ou muito ruim) respondem mais — o que pode distorcer a média.
 
-## Requisito 3: **Análise Exploratória dos Dados (EDA)**
+2. **NPS não explica a causa**: ele mede o resultado, não o motivo. Sem cruzar com dados operacionais, o NPS sozinho não indica o que melhorar.
 
-### 1. Quais fatores parecem mais críticos para a satisfação?
+3. **Data leakage no modelo preditivo** (risco técnico crítico): algumas variáveis da base são coletadas junto com ou **após** o NPS. Usá-las como features de um modelo preditivo cria **vazamento de dados** — o modelo aprende com informações que não estariam disponíveis na hora da previsão, gerando performance inflada e inutilizável na prática. Detalhado no Requisito 4.
 
-Para identificar os fatores mais críticos, foram utilizadas três abordagens complementares no notebook analises.ipynb: análise de correlação com o nps_score, comparação entre grupos de clientes (detratores, neutros e promotores) e avaliação de importância de variáveis por meio de um modelo preditivo.
-
-Os resultados foram consistentes entre essas análises.
-
-As variáveis que mais se destacaram foram:
-- delivery_delay_days
-- complaints_count
-- customer_service_contacts
-- resolution_time_days
-
-Essas métricas apresentaram associação relevante com o NPS e diferenças claras entre os grupos analisados, conforme evidenciado nos gráficos e tabelas gerados no notebook.
-
-Isso indica que problemas logísticos e dificuldades no atendimento estão entre os principais fatores relacionados à insatisfação do cliente.
+4. **Limitação preventiva**: como é coletado ao final, o NPS isolado não permite intervir a tempo. Daí a necessidade de transformar dados operacionais em sinais antecipados de insatisfação.
 
 ---
 
-### 2. O que mais gera detratores?
+## Metodologia
 
-A partir das análises realizadas no analises.ipynb, os detratores apresentam padrões bem consistentes quando comparados aos promotores:
+### Análise Exploratória (EDA)
+- Estatísticas descritivas e verificação de qualidade da base
+- Distribuição de clientes por categoria NPS
+- Correlação entre variáveis numéricas e NPS
+- Comparação de métricas por categoria (Detrator / Neutro / Promotor)
+- Análise de pontos de ruptura por faixas de atraso e contatos
 
-- Maior atraso na entrega  
-- Maior número de reclamações  
-- Mais contatos com o atendimento  
-- Maior tempo de resolução de problemas  
-
-Esses fatores aparecem tanto na análise descritiva quanto na avaliação do modelo, o que reforça a relação entre falhas operacionais e baixa satisfação.
-
-Ou seja, o detrator normalmente não surge de forma aleatória, mas sim como consequência de uma jornada com atritos.
-
----
-
-### 3. Existe algum “ponto de ruptura” na experiência do cliente?
-
-A análise exploratória também indicou possíveis pontos de ruptura na experiência.
-
-No caso do atraso na entrega, por exemplo, observou-se que o NPS tende a cair conforme aumentam os dias de atraso, o que sugere uma tolerância limitada por parte do cliente.
-
-O mesmo comportamento foi observado em relação ao número de contatos com o atendimento. A partir de múltiplas interações, a experiência deixa de ser pontual e passa a ser percebida como problemática.
-
-Esses padrões foram identificados a partir das análises por faixa realizadas no notebook, indicando limites operacionais relevantes.
+### Modelo Preditivo
+- Avaliação criteriosa de data leakage (veja Requisito 4 no notebook)
+- Features selecionadas: variáveis disponíveis antes da coleta do NPS
+- Algoritmo: RandomForestRegressor (300 estimadores)
+- Separação: 80% treino / 20% teste
+- Métrica: R²
+- Avaliação de importância via Permutation Importance
 
 ---
 
-### 4. Que tipo de cliente tende a ter NPS mais alto ou mais baixo?
+## Requisito 3 — Análise Exploratória (resumo executivo)
 
-Clientes com NPS mais alto (promotores) geralmente apresentam uma jornada mais simples:
+> Análise completa com código e gráficos em `notebooks/analises.ipynb`.
 
-- Recebem o pedido dentro do prazo  
-- Não precisam acionar o atendimento  
-- Não registram reclamações  
-- Têm resolução rápida quando há algum problema  
+### Fatores mais críticos para a satisfação
 
-Já os clientes com NPS mais baixo (detratores):
+Três fatores se destacam com clareza na correlação com NPS:
 
-- Sofrem com atrasos na entrega  
-- Precisam entrar em contato com o atendimento várias vezes  
-- Têm problemas que demoram para ser resolvidos  
-- Apresentam maior número de reclamações  
+1. **Atraso na entrega** (`delivery_delay_days`): correlação -0,60 — o fator mais relevante.
+2. **Volume de reclamações** (`complaints_count`): correlação -0,50.
+3. **Contatos com atendimento** (`customer_service_contacts`): correlação -0,35.
 
-Também foram observadas variáveis com alta associação ao NPS, como repeat_purchase_30d e csat_internal_score. No entanto, essas métricas foram analisadas com cautela no notebook, pois podem representar consequência da satisfação ou estar muito próximas do próprio conceito de NPS.
+### O que mais gera detratores?
+
+Detratores têm, em média:
+- 2,53 dias de atraso (vs. 0,76 dos promotores)
+- 4,62 reclamações (vs. 2,39 dos promotores)
+- 1,69 contatos com suporte (vs. 0,78 dos promotores)
+- 5,79 dias para resolução (vs. 4,10 dos promotores)
+
+### Pontos de ruptura na experiência
+
+**Atraso na entrega:**
+
+| Faixa | NPS médio |
+|---|---|
+| Sem atraso | 6,86 |
+| 1-2 dias | 5,05 |
+| 3-5 dias | 2,89 |
+| 6-10 dias | 0,81 |
+
+A partir de 3 dias de atraso, o NPS já cai para a zona de detrator.
+
+**Contatos com atendimento:**
+
+| Contatos | NPS médio |
+|---|---|
+| 0 | 5,54 |
+| 1 | 4,66 |
+| 2 | 4,12 |
+| 3-4 | 3,04 |
+| 5+ | 1,93 |
+
+### Perfil dos clientes por NPS
+
+**Promotores**: receberam no prazo, não acionaram o suporte, tiveram resolução rápida quando necessário. Jornada simples e sem fricção. Todos recompraram em 30 dias.
+
+**Detratores**: sofreram atrasos, reclamaram, precisaram contatar o suporte múltiplas vezes, e a resolução foi demorada. São **74% da base**.
+
+**O que NÃO explica o NPS**: idade, região, valor do pedido, número de itens e forma de pagamento têm correlação desprezível (< 0,05). O NPS é explicado pela **qualidade da execução operacional**, não pelo perfil do cliente.
 
 ---
 
-### Conclusão
+## Requisito 4 — Reflexão sobre Modelo Preditivo
 
-A análise exploratória realizada no notebook analises.ipynb mostra que a satisfação do cliente está diretamente ligada à qualidade da operação, principalmente nos processos de logística e atendimento.
+> Implementação completa em `notebooks/analises.ipynb`.
 
-As evidências foram consistentes entre diferentes abordagens analíticas, indicando que atraso na entrega, volume de reclamações, necessidade de suporte e tempo de resolução são fatores relevantes para explicar a variação do NPS.
+### Estratégia adotada
 
-Isso reforça que a empresa pode melhorar a satisfação não apenas medindo o resultado final, mas atuando diretamente nos processos que influenciam a experiência ao longo da jornada.
+**Problema como regressão**: mantemos `nps_score` como variável contínua (0-10). Isso preserva granularidade — saber se um cliente está em risco de NPS 2 ou NPS 5 tem implicação operacional diferente.
+
+### Atenção crítica: data leakage
+
+Antes de qualquer modelagem, avaliamos se cada variável estaria disponível **no momento em que a previsão seria feita** — ao final da entrega, antes do NPS ser coletado:
+
+| Variável | Disponível antes do NPS? | Decisão |
+|---|---|---|
+| `delivery_delay_days`, `delivery_time_days`, `delivery_attempts` | ✅ Sim — dados da entrega | Incluir |
+| `freight_value`, `order_value`, `items_quantity`, etc. | ✅ Sim — dados do pedido | Incluir |
+| `customer_age`, `customer_region`, `customer_tenure_months` | ✅ Sim — perfil do cliente | Incluir |
+| `customer_service_contacts`, `resolution_time_days` | ⚠️ Parcialmente — podem ocorrer durante ou após a jornada | Incluir com ressalva |
+| `complaints_count` | ❌ Não — reclamação é **consequência** do problema, não causa. Usar criaria leakage | **Excluir** |
+| `csat_internal_score` | ❌ Não — outra métrica de satisfação, simultânea ao NPS | **Excluir** |
+| `repeat_purchase_30d` | ❌ Não — ocorre 30 dias *após* o pedido | **Excluir** |
+
+### Resultados dos modelos
+
+| Configuração | R² | Observação |
+|---|---|---|
+| Só features seguras (sem leakage) | **0,35** | Modelo honesto e deployável |
+| + contacts e resolution_time | **0,52** | Variáveis discutíveis, mas defensáveis |
+| Com tudo (inclui leakage) | **0,62** | Inflado — inútil na prática |
+
+O principal driver é `delivery_delay_days` — com 76% da importância no modelo sem leakage. Isso confirma que **atraso na entrega é o coração do problema**.
+
+### Como seria usado na prática
+
+Ao final de cada entrega (antes do envio da pesquisa), o modelo receberia os dados operacionais e geraria uma **previsão de NPS**. Casos com previsão baixa seriam sinalizados para ação imediata: contato proativo, oferta de compensação ou alerta para a equipe de logística. A empresa passaria de **reativa para preventiva**.
+
+---
+
+## Como Reproduzir os Resultados
+
+### Pré-requisitos
+
+```bash
+pip install pandas matplotlib scikit-learn
+```
+
+### Passos
+
+1. Clone o repositório
+2. Coloque o arquivo CSV em `data/desafio_nps_fase_1.csv`
+3. Abra `notebooks/analises.ipynb`
+4. Execute todas as células em ordem
+
+> Desenvolvido com Python 3.10.
